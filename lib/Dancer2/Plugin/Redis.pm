@@ -8,12 +8,12 @@ BEGIN {
 }
 
 use Carp qw( carp croak );
-use Dancer2::Core::Types qw( Undef AnyOf InstanceOf );
 use Dancer2::Plugin;  # makes this a Moo::Role!
 use Redis;
 use Safe::Isa;
 use Try::Tiny;
 use Type::Tiny;
+use Types::Standard qw( Maybe InstanceOf );
 
 =head1 SYNOPSIS
 
@@ -76,7 +76,7 @@ my $TYPE_SERIALIZATIONOBJECT = Type::Tiny->new(
 
 has _serialization => (
   is      => 'lazy',
-  isa     => AnyOf [ Undef, $TYPE_SERIALIZATIONOBJECT ],
+  isa     => Maybe[$TYPE_SERIALIZATIONOBJECT],
   builder => sub {
     my ($dsl1) = @_;
     my $conf = plugin_setting;
@@ -102,7 +102,7 @@ has _serialization => (
 
 has _redis => (
   is      => 'lazy',
-  isa     => AnyOf [ InstanceOf ['Redis'], InstanceOf ['t::TestApp::RedisMock'] ],
+  isa     => InstanceOf ['Redis', 't::TestApp::RedisMock' ],
   builder => sub {
     my ($dsl2) = @_;
     my $conf = plugin_setting;
